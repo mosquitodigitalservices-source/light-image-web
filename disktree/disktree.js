@@ -12,6 +12,8 @@ const STRINGS = {
     destPending: 'Destino pendiente', destLabel: 'Destino',
     destNeedsAccess: 'Pulsa «Dar acceso» para que el navegador vuelva a poder usar esta carpeta.',
     destZip: 'Este navegador no puede crear carpetas directamente: la estructura se descargará como ZIP.',
+    destHint: 'Chrome no deja usar directamente el Escritorio, Documentos, Descargas, tu carpeta de usuario ni la raíz de un disco. Elige una carpeta dentro de ellos, o créala con «Nueva carpeta» en la ventana de selección (por ejemplo, Escritorio › Rodajes).',
+    destHintCancelled: 'Si Chrome ha dicho que «la carpeta no se puede abrir», es porque es una carpeta del sistema. Vuelve a pulsar «Seleccionar destino» y elige o crea una carpeta dentro de ella (por ejemplo, Escritorio › Rodajes). También puedes seguir sin destino y descargar la estructura como ZIP.',
     datesTitle: 'Fechas y organización', datesCount: n => n === 1 ? '1 jornada seleccionada' : `${n} jornadas seleccionadas`,
     date: 'Fecha', addDate: 'Añadir fecha', removeDate: 'Eliminar fecha',
     nsd: 'NEXT SHOOTING DAY', searching: 'Buscando la última jornada creada…',
@@ -87,6 +89,8 @@ const STRINGS = {
     destPending: 'Destination pending', destLabel: 'Destination',
     destNeedsAccess: 'Click “Grant access” so the browser can use this folder again.',
     destZip: 'This browser can’t create folders directly: the structure will download as a ZIP.',
+    destHint: 'Chrome doesn’t allow your Desktop, Documents, Downloads, home folder or a drive’s root to be used directly. Pick a folder inside them, or make one with “New Folder” in the picker (for example, Desktop › Shoots).',
+    destHintCancelled: 'If Chrome said the folder “can’t be opened”, it’s a system folder. Click “Choose destination” again and pick or create a folder inside it (for example, Desktop › Shoots). You can also carry on without a destination and download the structure as a ZIP.',
     datesTitle: 'Dates and organization', datesCount: n => n === 1 ? '1 shooting day selected' : `${n} shooting days selected`,
     date: 'Date', addDate: 'Add date', removeDate: 'Remove date',
     nsd: 'NEXT SHOOTING DAY', searching: 'Looking for the latest shooting day…',
@@ -478,11 +482,18 @@ async function restoreDestination() {
 async function selectDestination() {
   let handle;
   try {
-    handle = await window.showDirectoryPicker({ id: 'disktree', mode: 'readwrite' });
+    handle = await window.showDirectoryPicker({ id: 'disktree', mode: 'readwrite', startIn: 'desktop' });
   } catch (e) {
-    if (e.name !== 'AbortError') showMessage(t('errorTitle'), t('err_accessDenied'));
+    // Chrome reports its blocked system folders (Desktop, Documents, home…) as a plain cancel.
+    if (e.name === 'AbortError') {
+      S.pickCancelled = true;
+      renderDest();
+    } else {
+      showMessage(t('errorTitle'), t('err_accessDenied'));
+    }
     return;
   }
+  S.pickCancelled = false;
   S.dest = { handle, name: handle.name, permission: 'granted' };
   try { await idb('readwrite', s => s.put(handle, DEST_KEY)); } catch {}
   renderDest();
@@ -1033,6 +1044,10 @@ function renderDest() {
   }
   $('createTitle').textContent = !fsSupported ? t('readyZip') : S.dest ? t('readyReview') : t('destPendingTitle');
   $('previewDest').textContent = !fsSupported ? t('destZip') : S.dest ? '' : t('destPending');
+  const hint = $('destHint');
+  hint.hidden = !fsSupported || !!S.dest;
+  hint.textContent = S.pickCancelled ? t('destHintCancelled') : t('destHint');
+  hint.classList.toggle('warn', !!S.pickCancelled);
 }
 
 function renderDates() {
