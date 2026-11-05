@@ -464,7 +464,16 @@ function idb(mode, fn) {
     open.onupgradeneeded = () => open.result.createObjectStore('kv');
     open.onerror = () => reject(open.error);
     open.onsuccess = () => {
-      const db = open.result, tx = db.transaction('kv', mode), req = fn(tx.objectStore('kv'));
+      const db = open.result;
+      let tx, req;
+      try {
+        tx = db.transaction('kv', mode);
+        req = fn(tx.objectStore('kv'));
+      } catch (e) {
+        db.close();
+        reject(e);
+        return;
+      }
       tx.oncomplete = () => { db.close(); resolve(req.result); };
       tx.onerror = () => { db.close(); reject(tx.error); };
     };
