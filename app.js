@@ -48,6 +48,7 @@ const STRINGS = {
 };
 
 const STORE_KEY = 'lightimage.colorpalette';
+const LANG_KEY = 'lightimage.lang';
 const COUNTS = [4, 8, 16, 24, 32];
 const IMAGE_EXT = /\.(png|jpe?g|tiff?|heic|heif|webp)$/i;
 const PAGE = { w: 297, h: 210, m: 12 };
@@ -70,12 +71,15 @@ function loadPrefs() {
     if (Array.isArray(saved.hsv) && saved.hsv.length === 3) state.hsv = saved.hsv;
     if (typeof saved.header === 'string') state.header = saved.header;
     if (typeof saved.titles === 'boolean') state.titles = saved.titles;
+    const lang = localStorage.getItem(LANG_KEY);
+    if (lang in STRINGS) state.lang = lang;
   } catch {}
 }
 function savePrefs() {
   try {
     const { lang, count, hsv, header, titles } = state;
     localStorage.setItem(STORE_KEY, JSON.stringify({ lang, count, hsv, header, titles }));
+    localStorage.setItem(LANG_KEY, lang);
   } catch {}
 }
 
