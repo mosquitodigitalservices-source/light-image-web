@@ -1127,7 +1127,7 @@ let dragId = null;
 function renderSections() {
   const secs = S.cfg.sections;
   $('secCount').textContent = t('secCount', secs.length);
-  $('sections').replaceChildren(...secs.map((s, i) => {
+  const cards = secs.map((s, i) => {
     const card = h('div', { class: `sec-card${s.isEnabled ? '' : ' off'}`, 'data-id': s.id });
     const grip = h('span', { class: 'grip', draggable: 'true', title: t('reorder'), 'aria-hidden': 'true' }, icon('grip'));
     grip.addEventListener('dragstart', e => {
@@ -1164,7 +1164,7 @@ function renderSections() {
     const name = h('input', { class: 'input sec-name', type: 'text', value: s.name, 'aria-label': t('sectionName'), placeholder: t('sectionName'), spellcheck: 'false' });
     name.addEventListener('input', () => { s.name = name.value; textChange(); });
     const btn = (ic, label, onclick, disabled, extra = '') => h('button', { type: 'button', class: `icon-btn${extra}`, 'aria-label': label, title: label, disabled, onclick }, icon(ic));
-    const move = to => { const [m] = secs.splice(i, 1); secs.splice(to, 0, m); structuralChange(); $('sections').children[to]?.querySelector(`[aria-label="${to < i ? t('moveUp') : t('moveDown')}"]`)?.focus(); };
+    const move = to => { const [m] = secs.splice(i, 1); secs.splice(to, 0, m); structuralChange(); $('sections').querySelector(`[data-id="${s.id}"] [aria-label="${to < i ? t('moveUp') : t('moveDown')}"]`)?.focus(); };
     card.append(
       h('div', { class: 'sec-row' }, grip, toggle, name,
         btn('plus', t('addFolder'), () => { s.items.push({ id: uuid(), name: 'NEW_FOLDER', isEnabled: true }); structuralChange(); }),
@@ -1179,8 +1179,14 @@ function renderSections() {
         return h('div', { class: `item-row${f.isEnabled ? '' : ' off'}` }, ft, fn);
       })));
     return card;
-  }));
+  });
+  // Like the Mac app: two columns filled alternately (1, 3, 5… left; 2, 4… right); one column on narrow screens.
+  const columns = twoColumns.matches ? [[], []] : [[]];
+  cards.forEach((card, i) => columns[i % columns.length].push(card));
+  $('sections').replaceChildren(...columns.map(col => h('div', { class: 'sec-col' }, col)));
 }
+const twoColumns = matchMedia('(min-width: 900px)');
+twoColumns.addEventListener('change', renderSections);
 
 function structuralChange() {
   renderSections();
