@@ -3,7 +3,7 @@
 const STRINGS = {
   es: {
     lead: 'Configura, revisa y genera una estructura lista para producción. Todo se procesa en tu navegador.',
-    aboutTool: 'Información sobre Disktree', aboutDest: 'Información sobre el destino', aboutMulti: 'Información sobre DayXX_OF_DayXX', aboutSections: 'Información sobre cómo ordenar las secciones', aboutCreate: 'Información sobre Revisar y crear',
+    aboutTool: 'Información sobre Disktree', aboutDest: 'Información sobre el destino', aboutSections: 'Información sobre cómo ordenar las secciones', aboutCreate: 'Información sobre Revisar y crear',
     template: 'Template', defaultTpl: 'Default', unsaved: 'Cambios sin guardar',
     saveNew: 'Guardar como nuevo', update: 'Actualizar', manage: 'Gestionar',
     projTitle: 'Proyecto',
@@ -14,7 +14,7 @@ const STRINGS = {
     destZip: 'Este navegador no puede crear carpetas directamente: la estructura se descargará como ZIP.',
     destHint: 'Chrome no deja usar directamente el Escritorio, Documentos, Descargas, tu carpeta de usuario ni la raíz de un disco. Elige una carpeta dentro de ellos, o créala con «Nueva carpeta» en la ventana de selección (por ejemplo, Escritorio › Rodajes).',
     destHintCancelled: 'Si Chrome ha dicho que «la carpeta no se puede abrir», es porque es una carpeta del sistema. Vuelve a pulsar «Seleccionar destino» y elige o crea una carpeta dentro de ella (por ejemplo, Escritorio › Rodajes). También puedes seguir sin destino y descargar la estructura como ZIP.',
-    datesTitle: 'Fechas y organización', datesCount: n => n === 1 ? '1 jornada seleccionada' : `${n} jornadas seleccionadas`,
+    datesTitle: 'Fechas y organización',
     date: 'Fecha', addDate: 'Añadir fecha', removeDate: 'Eliminar fecha',
     nsd: 'NEXT SHOOTING DAY', searching: 'Buscando la última jornada creada…',
     ambiguous: 'Se encontraron varias referencias posibles. Selecciona la jornada correcta.', use: 'Usar',
@@ -27,11 +27,10 @@ const STRINGS = {
     nsdNeedsAccess: 'Da acceso de nuevo al destino para detectar la última jornada, o escríbela a mano.',
     nsdNotFound: 'No se encontraron jornadas compatibles dentro del proyecto seleccionado. Puedes escribir la última jornada a mano.',
     format: 'Formato de fecha', prefix: 'Usar la fecha como prefijo', suffix: 'Usar la fecha como sufijo',
-    multi: 'Usar formato DayXX_OF_DayXX', multiHelp: 'Las nuevas jornadas utilizan el formato DayXX.',
     numbered: 'Numerar las subcarpetas principales', sectionDate: 'Añadir la fecha como sufijo a las secciones',
     offset: 'Desplazamiento del día inicial',
     previewTitle: 'Vista previa',
-    secTitle: 'Secciones', secCount: n => `${n} grupos`,
+    secTitle: 'Secciones',
     secHelp: 'Arrastra cada sección por su asa ⋮⋮ o usa las flechas para cambiar el orden.', addSection: 'Añadir sección',
     sectionName: 'Nombre de la sección', folderName: 'Nombre de carpeta',
     includeSection: 'Incluir sección', includeFolder: 'Incluir carpeta', addFolder: 'Añadir carpeta a la sección',
@@ -86,7 +85,7 @@ const STRINGS = {
   },
   en: {
     lead: 'Set up, review and generate a production-ready folder structure. Everything runs in your browser.',
-    aboutTool: 'About Disktree', aboutDest: 'About the destination', aboutMulti: 'About DayXX_OF_DayXX', aboutSections: 'About reordering sections', aboutCreate: 'About Review and create',
+    aboutTool: 'About Disktree', aboutDest: 'About the destination', aboutSections: 'About reordering sections', aboutCreate: 'About Review and create',
     template: 'Template', defaultTpl: 'Default', unsaved: 'Unsaved changes',
     saveNew: 'Save as new', update: 'Update', manage: 'Manage',
     projTitle: 'Project',
@@ -97,7 +96,7 @@ const STRINGS = {
     destZip: 'This browser can’t create folders directly: the structure will download as a ZIP.',
     destHint: 'Chrome doesn’t allow your Desktop, Documents, Downloads, home folder or a drive’s root to be used directly. Pick a folder inside them, or make one with “New Folder” in the picker (for example, Desktop › Shoots).',
     destHintCancelled: 'If Chrome said the folder “can’t be opened”, it’s a system folder. Click “Choose destination” again and pick or create a folder inside it (for example, Desktop › Shoots). You can also carry on without a destination and download the structure as a ZIP.',
-    datesTitle: 'Dates and organization', datesCount: n => n === 1 ? '1 shooting day selected' : `${n} shooting days selected`,
+    datesTitle: 'Dates and organization',
     date: 'Date', addDate: 'Add date', removeDate: 'Remove date',
     nsd: 'NEXT SHOOTING DAY', searching: 'Looking for the latest shooting day…',
     ambiguous: 'Several possible references were found. Pick the right shooting day.', use: 'Use',
@@ -110,11 +109,10 @@ const STRINGS = {
     nsdNeedsAccess: 'Grant access to the destination again to detect the latest day, or enter it by hand.',
     nsdNotFound: 'No matching shooting days were found in this project. You can enter the latest day by hand.',
     format: 'Date format', prefix: 'Use the date as a prefix', suffix: 'Use the date as a suffix',
-    multi: 'Use DayXX_OF_DayXX format', multiHelp: 'New shooting days use the DayXX format.',
     numbered: 'Number the main subfolders', sectionDate: 'Add the date as a suffix to sections',
     offset: 'Starting day offset',
     previewTitle: 'Preview',
-    secTitle: 'Sections', secCount: n => `${n} groups`,
+    secTitle: 'Sections',
     secHelp: 'Drag a section by its ⋮⋮ handle or use the arrows to change the order.', addSection: 'Add section',
     sectionName: 'Section name', folderName: 'Folder name',
     includeSection: 'Include section', includeFolder: 'Include folder', addFolder: 'Add folder to section',
@@ -1066,8 +1064,7 @@ function renderConfig() {
   $('projectName').value = c.projectName;
   $('company').value = c.productionCompany;
   $('dateFormat').value = c.dateFormat;
-  for (const k of ['usesDatePrefix', 'usesDateSuffix', 'usesMultiDayFolders', 'usesNumberedSubfolders', 'usesDateSuffixInSections']) $(k).checked = c[k];
-  $('usesMultiDayFolders').closest('.opt').toggleAttribute('data-disabled', true);
+  for (const k of ['usesDatePrefix', 'usesDateSuffix', 'usesNumberedSubfolders', 'usesDateSuffixInSections']) $(k).checked = c[k];
   $('offsetOut').textContent = c.initialDayOffset;
   $('offsetDown').disabled = c.initialDayOffset <= 0;
   $('offsetUp').disabled = c.initialDayOffset >= 99;
@@ -1111,7 +1108,6 @@ function renderDest() {
 }
 
 function renderDates() {
-  $('datesCount').textContent = t('datesCount', S.dates.length);
   $('chips').replaceChildren(...S.dates.map(d => h('span', { class: 'chip' },
     formatDate(S.cfg.dateFormat, d),
     h('button', { type: 'button', class: 'icon-btn', 'aria-label': `${t('removeDate')} ${displayDate(d)}`, onclick: () => removeDate(d.id) }, icon('x')))));
@@ -1186,7 +1182,6 @@ function renderPreview() {
 let dragId = null;
 function renderSections() {
   const secs = S.cfg.sections;
-  $('secCount').textContent = t('secCount', secs.length);
   const cards = secs.map((s, i) => {
     const card = h('div', { class: `sec-card${s.isEnabled ? '' : ' off'}`, 'data-id': s.id });
     const grip = h('span', { class: 'grip', draggable: 'true', title: t('reorder'), 'aria-hidden': 'true' }, icon('grip'));
