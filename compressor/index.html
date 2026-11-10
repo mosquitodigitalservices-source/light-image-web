@@ -28,12 +28,16 @@
 </header>
 
 <main>
-  <p class="eyebrow">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="14" height="12" rx="2"/><path d="M3 15V5a2 2 0 0 1 2-2h12"/><circle cx="12" cy="11" r="1.2"/><path d="m21 16-4-4-6 6"/></svg>
-    COMPRESSOR
-  </p>
-  <h1 data-i18n="title"></h1>
-  <p class="lead" data-i18n="lead"></p>
+  <div class="page-title">
+    <h1 class="eyebrow">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="7" width="14" height="12" rx="2"/><path d="M3 15V5a2 2 0 0 1 2-2h12"/><circle cx="12" cy="11" r="1.2"/><path d="m21 16-4-4-6 6"/></svg>
+      COMPRESSOR
+    </h1>
+    <span class="info">
+      <button type="button" class="info-btn" aria-describedby="leadTip" data-i18n-aria="aboutTool">i</button>
+      <span class="tip" role="tooltip" id="leadTip" data-i18n="lead"></span>
+    </span>
+  </div>
 
   <div class="cx-grid">
     <div class="cx-controls">
@@ -46,8 +50,11 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M12 10v6M9 13h6"/></svg>
           <span data-i18n="addFolder"></span>
         </button>
+        <span class="info">
+          <button type="button" class="info-btn" aria-describedby="dropTip" data-i18n-aria="aboutImport">i</button>
+          <span class="tip" role="tooltip" id="dropTip" data-i18n="dropHint"></span>
+        </span>
       </div>
-      <p class="hint" data-i18n="dropHint"></p>
       <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" hidden>
       <input type="file" id="folderInput" webkitdirectory multiple hidden>
 

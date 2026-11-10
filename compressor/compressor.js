@@ -2,9 +2,9 @@ import { crc32 } from './metadata.js';
 
 const STRINGS = {
   es: {
-    title: 'Compresión de imágenes',
     lead: 'Prepara entregas optimizadas sin alterar dimensiones ni archivos originales. Todo se procesa en tu navegador.',
     addImages: 'Añadir imágenes', addFolder: 'Añadir carpeta',
+    aboutTool: 'Información sobre Compressor', aboutImport: 'Información sobre cómo añadir imágenes',
     dropHint: 'También puedes soltar imágenes o una carpeta en cualquier parte de la página. JPG, PNG, WebP, HEIC y HEIF.',
     dropOverlay: 'Suelta las imágenes', close: 'Cerrar',
     compTitle: 'Compresión', compSub: 'Calidad y conservación', preset: 'Preset',
@@ -54,9 +54,9 @@ const STRINGS = {
     err_failed: m => `No se pudo comprimir: ${m}`
   },
   en: {
-    title: 'Image compression',
     lead: 'Prepare optimized deliveries without changing dimensions or original files. Everything runs in your browser.',
     addImages: 'Add images', addFolder: 'Add folder',
+    aboutTool: 'About Compressor', aboutImport: 'About adding images',
     dropHint: 'You can also drop images or a folder anywhere on the page. JPG, PNG, WebP, HEIC and HEIF.',
     dropOverlay: 'Drop the images', close: 'Close',
     compTitle: 'Compression', compSub: 'Quality and preservation', preset: 'Preset',
@@ -614,6 +614,19 @@ $('folderInput').addEventListener('change', e => {
   e.target.value = '';
 });
 $('bannerClose').addEventListener('click', () => setMessage(null));
+
+// Info tooltips float (position: fixed) below their button, centred but kept inside the viewport.
+function placeTip(info) {
+  const b = info.querySelector('.info-btn').getBoundingClientRect(), tip = info.querySelector('.tip'), w = tip.offsetWidth;
+  tip.style.left = `${Math.max(12, Math.min(b.left + b.width / 2 - w / 2, document.documentElement.clientWidth - w - 12))}px`;
+  tip.style.top = `${b.bottom + 8}px`;
+}
+const infos = document.querySelectorAll('.info');
+infos.forEach(info => {
+  info.addEventListener('mouseenter', () => placeTip(info));
+  info.addEventListener('focusin', () => placeTip(info));
+});
+addEventListener('scroll', () => infos.forEach(placeTip), { passive: true });
 
 $('preset').addEventListener('change', e => { applyPreset(e.target.value); renderSettings(); });
 $('quality').addEventListener('input', e => {
