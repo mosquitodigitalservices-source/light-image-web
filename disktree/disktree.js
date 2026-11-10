@@ -58,8 +58,13 @@ const STRINGS = {
     manageTitle: 'Templates', manageSub: 'Guarda y reutiliza configuraciones de Disktree.',
     tplEmpty: 'Guarda la configuración actual del Editor para crear el primer template.',
     modified: d => `Modificado ${d}`, loaded: 'cargado',
-    importTpl: 'Importar', exportTpl: 'Exportar',
-    imported: n => n === 1 ? 'Se importó 1 template.' : `Se importaron ${n} templates.`,
+    importTpl: 'Importar', exportTpl: 'Exportar todo', exportOne: 'Exportar', importedName: 'Template importado',
+    imported: (added, skipped) => {
+      const text = added === 1 ? 'Se importó 1 template.' : `Se importaron ${added} templates.`;
+      if (!skipped) return text;
+      if (!added) return skipped === 1 ? 'El template ya estaba en la lista.' : `Los ${skipped} templates ya estaban en la lista.`;
+      return `${text} ${skipped === 1 ? '1 ya estaba' : `${skipped} ya estaban`} en la lista.`;
+    },
     importError: 'El archivo no es un archivo de templates válido.',
     tplSaveError: 'No se pudieron guardar los templates en este navegador.',
     err_destinationMissing: () => 'Selecciona una carpeta de destino.',
@@ -136,8 +141,13 @@ const STRINGS = {
     manageTitle: 'Templates', manageSub: 'Save and reuse Disktree configurations.',
     tplEmpty: 'Save the current Editor configuration to create your first template.',
     modified: d => `Modified ${d}`, loaded: 'loaded',
-    importTpl: 'Import', exportTpl: 'Export',
-    imported: n => n === 1 ? 'Imported 1 template.' : `Imported ${n} templates.`,
+    importTpl: 'Import', exportTpl: 'Export all', exportOne: 'Export', importedName: 'Imported template',
+    imported: (added, skipped) => {
+      const text = added === 1 ? 'Imported 1 template.' : `Imported ${added} templates.`;
+      if (!skipped) return text;
+      if (!added) return skipped === 1 ? 'That template was already in the list.' : `All ${skipped} templates were already in the list.`;
+      return `${text} ${skipped} ${skipped === 1 ? 'was' : 'were'} already in the list.`;
+    },
     importError: 'That file isn’t a valid templates file.',
     tplSaveError: 'Couldn’t save templates in this browser.',
     err_destinationMissing: () => 'Choose a destination folder.',
@@ -747,28 +757,67 @@ async function deleteTemplate(tp) {
   renderTplBar();
   renderManage();
 }
-function exportTemplates() {
-  const blob = new Blob([JSON.stringify({ schemaVersion: SCHEMA_VERSION, templates: S.templates }, null, 2)], { type: 'application/json' });
-  download(blob, 'templates.json');
+// Same file as the Mac app's templates.json and its Export: dates without
+// milliseconds, so any version of the app can import it.
+function exportTemplates(templates, fileName) {
+  const isoSeconds = value => new Date(value).toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const store = {
+    schemaVersion: SCHEMA_VERSION,
+    templates: templates.map(tp => ({ ...tp, createdAt: isoSeconds(tp.createdAt), modifiedAt: isoSeconds(tp.modifiedAt) }))
+  };
+  const blob = new Blob([JSON.stringify(store, null, 2)], { type: 'application/json' });
+  download(blob, `${fileName.replace(/[\\/:*?"<>|]+/g, '-').trim() || 'Disktree Templates'}.json`);
+}
+
+const nameKey = name => name.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+function availableName(name, taken) {
+  if (!taken.has(nameKey(name))) return name;
+  let n = 2;
+  while (taken.has(nameKey(`${name} ${n}`))) n++;
+  return `${name} ${n}`;
+}
+
+// Same rules as the Mac app: existing templates are never changed or replaced.
+// An identical template is skipped; a different one reusing an existing id gets
+// a new id; clashing names get a number.
+function mergeTemplates(incoming) {
+  const result = [...S.templates], taken = new Set(result.map(tp => nameKey(tp.name)));
+  let added = 0, skipped = 0;
+  for (const tp of incoming) {
+    const existing = result.find(x => x.id === tp.id);
+    if (existing && existing.name === tp.name && configKey(existing.configuration) === configKey(tp.configuration)) {
+      skipped++;
+      continue;
+    }
+    const name = availableName(tp.name, taken);
+    taken.add(nameKey(name));
+    result.push({ ...tp, id: existing ? uuid() : tp.id, name });
+    added++;
+  }
+  return { templates: result, added, skipped };
 }
 async function importTemplates(file) {
   let incoming;
   try {
     const data = JSON.parse(await file.text());
     if (data?.schemaVersion !== SCHEMA_VERSION || !Array.isArray(data.templates)) throw new Error();
-    incoming = data.templates.map(normalizeTemplate);
+    incoming = data.templates.map(tp => normalizeTemplate(tp?.name?.trim() ? tp : { ...tp, name: t('importedName') }));
     if (!incoming.length || incoming.some(tp => !tp)) throw new Error();
   } catch {
     return showMessage(t('tplErrorTitle'), t('importError'));
   }
-  for (const tp of incoming) {
-    const i = S.templates.findIndex(x => x.id === tp.id);
-    if (i >= 0) S.templates[i] = tp; else S.templates.push(tp);
+  const merge = mergeTemplates(incoming);
+  if (merge.added) {
+    const previous = S.templates;
+    S.templates = merge.templates;
+    if (!persistTemplates()) {
+      S.templates = previous;
+      return;
+    }
   }
-  if (!persistTemplates()) return;
   renderTplBar();
   renderManage();
-  showMessage(t('tplErrorTitle'), t('imported', incoming.length));
+  showMessage(t('tplErrorTitle'), t('imported', merge.added, merge.skipped));
 }
 
 // ---------- Creating ----------
@@ -1220,6 +1269,7 @@ function renderManage() {
         h('button', { type: 'button', class: 'btn', text: t('loadShort'), onclick: () => loadTemplate(tp) }),
         h('button', { type: 'button', class: 'btn', text: t('rename'), onclick: () => renameTemplate(tp) }),
         h('button', { type: 'button', class: 'btn', text: t('duplicate'), onclick: () => duplicateTemplate(tp) }),
+        h('button', { type: 'button', class: 'btn', text: t('exportOne'), onclick: () => exportTemplates([tp], tp.name) }),
         h('button', { type: 'button', class: 'btn', text: t('delete'), onclick: () => deleteTemplate(tp) })));
   }));
 }
@@ -1285,7 +1335,7 @@ $('tplSelect').addEventListener('change', e => {
 $('saveNewBtn').addEventListener('click', saveAsNew);
 $('updateBtn').addEventListener('click', updateCurrent);
 $('manageBtn').addEventListener('click', () => { renderManage(); openModal($('manage')); });
-$('exportBtn').addEventListener('click', exportTemplates);
+$('exportBtn').addEventListener('click', () => exportTemplates([...S.templates].sort((a, b) => a.name.localeCompare(b.name)), 'Disktree Templates'));
 $('importBtn').addEventListener('click', () => $('importInput').click());
 $('importInput').addEventListener('change', e => {
   const f = e.target.files[0];
