@@ -105,6 +105,13 @@ section{margin-bottom:32px}
 .ctx button:hover:not(:disabled),.ctx button:focus-visible{background:var(--accent-soft);outline:none}
 .ctx button:disabled{color:var(--faint);cursor:default}
 .ctx hr{margin:4px 6px;border:0;border-top:1px solid var(--line)}
+.page-title{display:flex;align-items:center;gap:10px;margin:0 0 28px}
+.page-title .eyebrow{margin:0;font-size:16px;letter-spacing:.16em}
+.info{position:relative;display:inline-flex;vertical-align:middle;text-transform:none;letter-spacing:normal;font-weight:400}
+.info-btn{display:grid;place-items:center;width:22px;height:22px;padding:0;border:1px solid var(--line-2);border-radius:50%;background:none;color:var(--muted);font-family:var(--mono);font-size:12px;font-weight:500;line-height:1;cursor:help}
+.info-btn:hover,.info-btn:focus-visible{color:var(--text);border-color:var(--accent)}
+.tip{position:fixed;top:0;left:0;z-index:30;text-align:left;white-space:normal;width:max-content;max-width:min(300px,calc(100vw - 24px));padding:10px 12px;border:1px solid var(--line-2);border-radius:var(--ctl);background:var(--panel);box-shadow:0 8px 24px rgba(0,0,0,.4);font-size:13px;line-height:1.5;color:var(--text);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .15s,transform .15s,visibility .15s;pointer-events:none}
+.info:hover .tip,.info-btn:focus+.tip{opacity:1;visibility:visible;transform:translateY(0)}
 @media (max-width:960px){.cols{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:600px){
   .top{flex-wrap:wrap;padding:14px 16px}main{padding:28px 16px 60px}.link{margin-left:0}

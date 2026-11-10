@@ -615,19 +615,6 @@ $('folderInput').addEventListener('change', e => {
 });
 $('bannerClose').addEventListener('click', () => setMessage(null));
 
-// Info tooltips float (position: fixed) below their button, centred but kept inside the viewport.
-function placeTip(info) {
-  const b = info.querySelector('.info-btn').getBoundingClientRect(), tip = info.querySelector('.tip'), w = tip.offsetWidth;
-  tip.style.left = `${Math.max(12, Math.min(b.left + b.width / 2 - w / 2, document.documentElement.clientWidth - w - 12))}px`;
-  tip.style.top = `${b.bottom + 8}px`;
-}
-const infos = document.querySelectorAll('.info');
-infos.forEach(info => {
-  info.addEventListener('mouseenter', () => placeTip(info));
-  info.addEventListener('focusin', () => placeTip(info));
-});
-addEventListener('scroll', () => infos.forEach(placeTip), { passive: true });
-
 $('preset').addEventListener('change', e => { applyPreset(e.target.value); renderSettings(); });
 $('quality').addEventListener('input', e => {
   S.settings.quality = Math.min(100, Math.max(0, +e.target.value));

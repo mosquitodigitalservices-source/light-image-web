@@ -2,8 +2,8 @@
 
 const STRINGS = {
   es: {
-    title: 'Estructura de proyecto',
     lead: 'Configura, revisa y genera una estructura lista para producción. Todo se procesa en tu navegador.',
+    aboutTool: 'Información sobre Disktree', aboutDest: 'Información sobre el destino', aboutMulti: 'Información sobre DayXX_OF_DayXX', aboutSections: 'Información sobre cómo ordenar las secciones', aboutCreate: 'Información sobre Revisar y crear',
     template: 'Template', defaultTpl: 'Default', unsaved: 'Cambios sin guardar',
     saveNew: 'Guardar como nuevo', update: 'Actualizar', manage: 'Gestionar',
     projTitle: 'Proyecto', projSub: 'Identificación y destino',
@@ -31,7 +31,8 @@ const STRINGS = {
     numbered: 'Numerar las subcarpetas principales', sectionDate: 'Añadir la fecha como sufijo a las secciones',
     offset: 'Desplazamiento del día inicial',
     previewTitle: 'Vista previa', previewSub: 'Se actualiza con cada cambio',
-    secTitle: 'Secciones', secCount: n => `${n} grupos · arrastra para ordenar`, addSection: 'Añadir sección',
+    secTitle: 'Secciones', secCount: n => `${n} grupos`,
+    secHelp: 'Arrastra cada sección por su asa ⋮⋮ o usa las flechas para cambiar el orden.', addSection: 'Añadir sección',
     sectionName: 'Nombre de la sección', folderName: 'Nombre de carpeta',
     includeSection: 'Incluir sección', includeFolder: 'Incluir carpeta', addFolder: 'Añadir carpeta a la sección',
     moveUp: 'Subir sección', moveDown: 'Bajar sección', removeSection: 'Eliminar sección', reorder: 'Reordenar sección',
@@ -79,8 +80,8 @@ const STRINGS = {
     level: n => `nivel ${n}`
   },
   en: {
-    title: 'Project structure',
     lead: 'Set up, review and generate a production-ready folder structure. Everything runs in your browser.',
+    aboutTool: 'About Disktree', aboutDest: 'About the destination', aboutMulti: 'About DayXX_OF_DayXX', aboutSections: 'About reordering sections', aboutCreate: 'About Review and create',
     template: 'Template', defaultTpl: 'Default', unsaved: 'Unsaved changes',
     saveNew: 'Save as new', update: 'Update', manage: 'Manage',
     projTitle: 'Project', projSub: 'Identification and destination',
@@ -108,7 +109,8 @@ const STRINGS = {
     numbered: 'Number the main subfolders', sectionDate: 'Add the date as a suffix to sections',
     offset: 'Starting day offset',
     previewTitle: 'Preview', previewSub: 'Updates with every change',
-    secTitle: 'Sections', secCount: n => `${n} groups · drag to reorder`, addSection: 'Add section',
+    secTitle: 'Sections', secCount: n => `${n} groups`,
+    secHelp: 'Drag a section by its ⋮⋮ handle or use the arrows to change the order.', addSection: 'Add section',
     sectionName: 'Section name', folderName: 'Folder name',
     includeSection: 'Include section', includeFolder: 'Include folder', addFolder: 'Add folder to section',
     moveUp: 'Move section up', moveDown: 'Move section down', removeSection: 'Remove section', reorder: 'Reorder section',
@@ -1052,11 +1054,11 @@ function renderDest() {
     $('destBtnLabel').textContent = needsAccess ? t('grantDest') : t('changeDest');
   }
   $('createTitle').textContent = !fsSupported ? t('readyZip') : S.dest ? t('readyReview') : t('destPendingTitle');
-  $('previewDest').textContent = !fsSupported ? t('destZip') : S.dest ? '' : t('destPending');
-  const hint = $('destHint');
-  hint.hidden = !fsSupported || !!S.dest;
-  hint.textContent = S.pickCancelled ? t('destHintCancelled') : t('destHint');
-  hint.classList.toggle('warn', !!S.pickCancelled);
+  $('destInfoTip').hidden = !fsSupported;
+  const warning = $('destHint');
+  warning.hidden = !fsSupported || !!S.dest || !S.pickCancelled;
+  warning.textContent = t('destHintCancelled');
+  warning.classList.add('warn');
 }
 
 function renderDates() {

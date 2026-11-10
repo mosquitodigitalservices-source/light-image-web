@@ -1,6 +1,5 @@
 const STRINGS = {
   es: {
-    title: 'Extracción cromática',
     lead: 'Importa imágenes y prepara paletas a partir de sus colores predominantes. Todo se procesa en tu navegador.',
     importTitle: 'Importación', importSub: 'Archivos de referencia',
     browse: 'Examinar imágenes', folder: 'Seleccionar carpeta', clear: 'Limpiar',
@@ -10,7 +9,9 @@ const STRINGS = {
     titles: 'Títulos de imagen', exportBtn: 'Export PDF',
     bgTitle: 'Color del fondo', bgSub: 'Fondo del PDF', brightness: 'Brillo',
     resultsTitle: 'Resultados', resultsSub: 'Paletas extraídas', palette: 'Paleta de colores',
-    empty: 'Importa imágenes para ver sus paletas. También puedes soltarlas en cualquier parte de la página.',
+    empty: 'Importa imágenes para ver sus paletas.',
+    importHint: 'También puedes soltar imágenes o una carpeta en cualquier parte de la página. PNG, JPEG, WebP, TIFF y HEIC.',
+    aboutTool: 'Información sobre Color Palette', aboutImport: 'Información sobre cómo añadir imágenes', aboutPreview: 'Información sobre cómo ordenar las imágenes',
     ignored: n => n === 1 ? '1 archivo no compatible se ignoró.' : `${n} archivos no compatibles se ignoraron.`,
     needImages: 'Importa al menos una imagen para exportar.',
     dropHint: 'Suelta las imágenes para importarlas',
@@ -23,7 +24,6 @@ const STRINGS = {
     fileName: 'paleta'
   },
   en: {
-    title: 'Color extraction',
     lead: 'Import images and build palettes from their dominant colors. Everything runs in your browser.',
     importTitle: 'Import', importSub: 'Reference files',
     browse: 'Browse images', folder: 'Choose folder', clear: 'Clear',
@@ -33,7 +33,9 @@ const STRINGS = {
     titles: 'Image titles', exportBtn: 'Export PDF',
     bgTitle: 'Background color', bgSub: 'PDF background', brightness: 'Brightness',
     resultsTitle: 'Results', resultsSub: 'Extracted palettes', palette: 'Color palette',
-    empty: 'Import images to see their palettes. You can also drop them anywhere on the page.',
+    empty: 'Import images to see their palettes.',
+    importHint: 'You can also drop images or a folder anywhere on the page. PNG, JPEG, WebP, TIFF and HEIC.',
+    aboutTool: 'About Color Palette', aboutImport: 'About adding images', aboutPreview: 'About reordering images',
     ignored: n => n === 1 ? '1 unsupported file was skipped.' : `${n} unsupported files were skipped.`,
     needImages: 'Import at least one image to export.',
     dropHint: 'Drop images to import them',

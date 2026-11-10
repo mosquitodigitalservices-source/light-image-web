@@ -115,3 +115,4 @@ select.input{color:var(--text)}
 select.input option{background:var(--panel);color:var(--text)}
 .dest-hint{margin:10px 2px 0;font-size:13px;line-height:1.5;color:var(--muted)}
 .dest-hint.warn{padding:10px 12px;border-radius:var(--ctl);background:rgba(255,196,94,.1);color:#f3d08f}
+.dest-actions{display:flex;align-items:center;gap:10px}

@@ -28,12 +28,13 @@
 </header>
 
 <main>
-  <p class="eyebrow">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 21a9 9 0 1 1 9-9c0 2.5-2 3.5-4 3.5h-1.8a1.7 1.7 0 0 0-1.2 2.9 1.6 1.6 0 0 1-1.2 2.6Z"/><circle cx="7.5" cy="11" r="1"/><circle cx="11" cy="7" r="1"/><circle cx="15.5" cy="8" r="1"/></svg>
+  <div class="page-title">
+    <h1 class="eyebrow">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 21a9 9 0 1 1 9-9c0 2.5-2 3.5-4 3.5h-1.8a1.7 1.7 0 0 0-1.2 2.9 1.6 1.6 0 0 1-1.2 2.6Z"/><circle cx="7.5" cy="11" r="1"/><circle cx="11" cy="7" r="1"/><circle cx="15.5" cy="8" r="1"/></svg>
     COLOR PALETTE
-  </p>
-  <h1 data-i18n="title"></h1>
-  <p class="lead" data-i18n="lead"></p>
+    </h1>
+    <span class="info"><button type="button" class="info-btn" aria-describedby="leadTip" data-i18n-aria="aboutTool">i</button><span class="tip" role="tooltip" id="leadTip" data-i18n="lead"></span></span>
+  </div>
 
   <section>
     <h2 class="sec"><span class="num">01</span><span data-i18n="importTitle"></span><small data-i18n="importSub"></small></h2>
@@ -46,6 +47,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg>
         <span data-i18n="folder"></span>
       </button>
+      <span class="info"><button type="button" class="info-btn" aria-describedby="importTip" data-i18n-aria="aboutImport">i</button><span class="tip" role="tooltip" id="importTip" data-i18n="importHint"></span></span>
       <span class="count" id="count"></span>
       <button type="button" class="link danger" id="clear" data-i18n="clear"></button>
     </div>
@@ -117,8 +119,7 @@
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="dlg-head">
       <div>
-        <h2 id="modalTitle" data-i18n="previewTitle"></h2>
-        <p data-i18n="previewSub"></p>
+        <h2 id="modalTitle"><span data-i18n="previewTitle"></span> <span class="info"><button type="button" class="info-btn" aria-describedby="previewTip" data-i18n-aria="aboutPreview">i</button><span class="tip" role="tooltip" id="previewTip" data-i18n="previewSub"></span></span></h2>
       </div>
       <button type="button" class="icon-btn" id="modalClose" data-i18n-aria="close">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
@@ -141,5 +142,6 @@
 </div>
 
 <script src="app.js"></script>
+<script src="info-tips.js"></script>
 </body>
 </html>
