@@ -7,7 +7,7 @@ const STRINGS = {
     colorsTitle: 'Colores de la paleta', amount: 'Cantidad de colores',
     exportTitle: 'Exportación', headerPh: 'Encabezado del PDF',
     titles: 'Títulos de imagen', exportBtn: 'Export PDF',
-    bgTitle: 'Color del fondo', brightness: 'Brillo',
+    bgTitle: 'Color del fondo', brightness: 'Brillo', resetBg: 'Restablecer el color del fondo',
     resultsTitle: 'Resultados', palette: 'Paleta de colores',
     empty: 'Importa imágenes para ver sus paletas.',
     importHint: 'También puedes soltar imágenes o una carpeta en cualquier parte de la página. PNG, JPEG, WebP, TIFF y HEIC.',
@@ -31,7 +31,7 @@ const STRINGS = {
     colorsTitle: 'Palette colors', amount: 'Number of colors',
     exportTitle: 'Export', headerPh: 'PDF header',
     titles: 'Image titles', exportBtn: 'Export PDF',
-    bgTitle: 'Background color', brightness: 'Brightness',
+    bgTitle: 'Background color', brightness: 'Brightness', resetBg: 'Reset the background color',
     resultsTitle: 'Results', palette: 'Color palette',
     empty: 'Import images to see their palettes.',
     importHint: 'You can also drop images or a folder anywhere on the page. PNG, JPEG, WebP, TIFF and HEIC.',
@@ -56,7 +56,8 @@ const IMAGE_EXT = /\.(png|jpe?g|tiff?|heic|heif|webp)$/i;
 const PAGE = { w: 297, h: 210, m: 12 };
 const PT = 0.3528;
 
-const state = { lang: 'es', count: 8, hsv: [0, 0, 1], header: '', titles: true, items: [] };
+const DEFAULT_HSV = [0, 0, 1];
+const state = { lang: 'es', count: 8, hsv: [...DEFAULT_HSV], header: '', titles: true, items: [] };
 let nextId = 1;
 
 const $ = id => document.getElementById(id);
@@ -90,6 +91,7 @@ function applyLang() {
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
   document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
   document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === state.lang));
   $('seg').setAttribute('aria-label', t('amount'));
   updateCount();
@@ -286,6 +288,7 @@ function updateBackground() {
   if (document.activeElement !== $('hexIn')) $('hexIn').value = hex(rgb);
   $('value').value = Math.round(v * 100);
   $('value').style.setProperty('--track', hex(hsvToRgb([h, s, 1])));
+  $('bgReset').disabled = hex(rgb) === hex(hsvToRgb(DEFAULT_HSV));
 }
 function pickFromWheel(e) {
   const b = wheelCanvas.getBoundingClientRect(), half = b.width / 2;
@@ -648,6 +651,12 @@ $('hexIn').addEventListener('change', e => {
   }
   updateBackground();
   e.target.value = hex(bgRgb());
+});
+$('bgReset').addEventListener('click', () => {
+  state.hsv = [...DEFAULT_HSV];
+  drawWheel();
+  updateBackground();
+  savePrefs();
 });
 
 loadPrefs();
